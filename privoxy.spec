@@ -70,10 +70,10 @@ Privoxy jest oparte na Internet Junkbusterze.
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_sbindir} \
-         $RPM_BUILD_ROOT%{_mandir}/man1 \
-         $RPM_BUILD_ROOT/var/log/%{name} \
-         $RPM_BUILD_ROOT%{privoxyconf}/templates \
-         $RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d}
+	$RPM_BUILD_ROOT%{_mandir}/man1 \
+	$RPM_BUILD_ROOT/var/log/%{name} \
+	$RPM_BUILD_ROOT%{privoxyconf}/templates \
+	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d}
 
 install -m 744 %{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
@@ -83,7 +83,7 @@ install -m 744 %{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 # wrong format
 for i in `ls *.action`
 do
-       cat $i | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/$i
+	cat $i | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/$i
 done
 cat default.filter | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/default.filter
 cat trust | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/trust
@@ -105,18 +105,18 @@ install -m 711 -d $RPM_BUILD_ROOT/var/log/%{name}
 ## Changing the sed paramter delimiter to @, so we don't have to
 ## escape the slashes
 cat config | \
-    sed 's@^confdir.*@confdir %{privoxyconf}@g' | \
-#    sed 's/^permissionsfile.*/permissionsfile \/etc\/%{name}\/permissionsfile/g' | \
-#    sed 's/^filterfile.*/default.filter \/etc\/%{name}\/default.filter/g' | \
-#    sed 's/^logfile.*/logfile \/var\/log\/%{name}\/logfile/g' | \
-#    sed 's/^jarfile.*/jarfile \/var\/log\/%{name}\/jarfile/g' | \
-#    sed 's/^forward.*/forward \/etc\/%{name}\/forward/g' | \
-#    sed 's/^aclfile.*/aclfile \/etc\/%{name}\/aclfile/g' > \
-    sed 's@^logdir.*@logdir %{_localstatedir}/log/%{name}@g' | \
-    sed -e 's/[[:cntrl:]]*$//' > \
-    $RPM_BUILD_ROOT%{privoxyconf}/config
-perl -pe 's/{-no-cookies}/{-no-cookies}\n\.redhat.com/' default.action >\
-    $RPM_BUILD_ROOT%{privoxyconf}/default.action
+	sed 's@^confdir.*@confdir %{privoxyconf}@g' | \
+# sed 's/^permissionsfile.*/permissionsfile \/etc\/%{name}\/permissionsfile/g' | \
+# sed 's/^filterfile.*/default.filter \/etc\/%{name}\/default.filter/g' | \
+# sed 's/^logfile.*/logfile \/var\/log\/%{name}\/logfile/g' | \
+# sed 's/^jarfile.*/jarfile \/var\/log\/%{name}\/jarfile/g' | \
+# sed 's/^forward.*/forward \/etc\/%{name}\/forward/g' | \
+# sed 's/^aclfile.*/aclfile \/etc\/%{name}\/aclfile/g' > \
+	sed 's@^logdir.*@logdir %{_localstatedir}/log/%{name}@g' | \
+		sed -e 's/[[:cntrl:]]*$//' > \
+		$RPM_BUILD_ROOT%{privoxyconf}/config
+	perl -pe 's/{-no-cookies}/{-no-cookies}\n\.redhat.com/' default.action >\
+		$RPM_BUILD_ROOT%{privoxyconf}/default.action
 
 
 ## Macros are expanded even on commentaries. So, we have to use %%
