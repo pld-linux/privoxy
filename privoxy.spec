@@ -48,7 +48,7 @@ Privoxy is based on the Internet Junkbuster.
 Privoxy to proxy WWW z rozszerzonymi mo¿liwo¶ciami filtrowania
 s³u¿±cymi do zabezpieczenia prywatno¶ci, filtrowania zawarto¶ci stron
 WWW, zarz±dzania ciasteczkami, kontroli dostêpu, usuwania bannerów,
-wyskakuj±cych okienek i innych wstrêtrnych internetowych ¶mieci.
+wyskakuj±cych okienek i innych wstrêtnych internetowych ¶mieci.
 Privoxy ma bardzo elastyczn± konfiguracjê i mo¿e byæ dopasowywane do
 indywidualnych potrzeb i gustów. Privoxy ma aplikacjê dla systemów
 samodzielnych i serwerów sieciowych dla wielu u¿ytkowników.
