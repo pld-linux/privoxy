@@ -2,9 +2,6 @@
 %define veryoldname junkbust
 %define oldname junkbuster
 %define privoxyconf %{_sysconfdir}/%{name}
-# TODO: resolve conflict
-%define privoxy_uid 73
-%define privoxy_gid 73
 
 Summary:	Privoxy - privacy enhancing proxy
 Summary(pl):	Privoxy - proxy rozszerzaj±ce prywatno¶æ
@@ -20,15 +17,18 @@ BuildRequires:	autoconf
 BuildRequires:	libtool
 BuildRequires:	lynx
 BuildRequires:	perl
+BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		rc-scripts
-Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(post):	fileutils
 Requires(post,preun):	/sbin/chkconfig
-Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Provides:	group(privoxy)
+Provides:	user(privoxy)
 Obsoletes:	junkbuster
 Obsoletes:	junkbuster-blank
 Obsoletes:	junkbuster-raw
@@ -127,21 +127,21 @@ perl -pe 's/{-no-cookies}/{-no-cookies}\n\.redhat.com/' default.action >\
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`getgid %{name}`" ]; then
-	if [ "`getgid %{name}`" != "%{privoxy_gid}" ]; then
-		echo "Error: group %{name} doesn't have gid=%{privoxy_gid}. Correct this before installing %{name}." 1>&2
+if [ -n "`/usr/bin/getgid privoxy`" ]; then
+	if [ "`/usr/bin/getgid privoxy`" != "108" ]; then
+		echo "Error: group privoxy doesn't have gid=108. Correct this before installing %{name}." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g %{privoxy_gid} -r -f %{name}
+	/usr/sbin/groupadd -g 108 privoxy
 fi
-if [ -n "`id -u %{name} 2>/dev/null`" ]; then
-	if [ "`id -u %{name}`" != "%{privoxy_uid}" ]; then
-		echo "Error: user %{name} doesn't have uid=%{privoxy_uid}. Correct this before installing %{name}." 1>&2
+if [ -n "`/bin/id -u privoxy 2>/dev/null`" ]; then
+	if [ "`/bin/id -u privoxy`" != "108" ]; then
+		echo "Error: user privoxy doesn't have uid=108. Correct this before installing %{name}." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -u %{privoxy_uid} -r -d %{privoxyconf} -s /bin/false -c "%{name} user" -g %{name} %{name} 1>&2
+	/usr/sbin/useradd -u 108 -r -d %{privoxyconf} -s /bin/false -c "%{name} user" -g privoxy privoxy 1>&2
 fi
 
 %post
@@ -173,8 +173,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	/usr/sbin/userdel %{name} || :
-	/usr/sbin/groupdel %{name} || :
+	%userremove privoxy
+	%groupremove privoxy
 fi
 
 %files
