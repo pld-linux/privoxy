@@ -16,7 +16,7 @@ URL:		http://www.privoxy.org/
 BuildRequires:	autoconf
 BuildRequires:	libtool
 BuildRequires:	lynx
-BuildRequires:	perl
+BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		rc-scripts
 Requires(pre):	/bin/id
