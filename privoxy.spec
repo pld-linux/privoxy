@@ -141,7 +141,7 @@ if [ -n "`/bin/id -u privoxy 2>/dev/null`" ]; then
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -u 108 -r -d %{privoxyconf} -s /bin/false -c "%{name} user" -g privoxy privoxy 1>&2
+	/usr/sbin/useradd -u 108 -d %{privoxyconf} -s /bin/false -c "%{name} user" -g privoxy privoxy 1>&2
 fi
 
 %post
