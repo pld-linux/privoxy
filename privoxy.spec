@@ -13,6 +13,7 @@ Version:	3.0.0
 Release:	1
 License:	GPL
 Source0:	http://www.waldherr.org/%{name}/%{name}-%{version}.tar.gz
+# Source0-md5:	152e21d4fb57b79da33559ba6dd1dd74
 Group:		Networking/Daemons
 URL:		http://www.privoxy.org/
 BuildRequires:	autoconf
