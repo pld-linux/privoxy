@@ -179,7 +179,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README AUTHORS ChangeLog LICENSE
+%doc AUTHORS ChangeLog README
 %doc doc/text/developer-manual.txt doc/text/user-manual.txt doc/text/faq.txt
 %doc doc/webserver/developer-manual
 %doc doc/webserver/user-manual
