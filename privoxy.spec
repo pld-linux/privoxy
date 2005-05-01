@@ -1,5 +1,4 @@
 
-%define veryoldname junkbust
 %define oldname junkbuster
 %define privoxyconf %{_sysconfdir}/%{name}
 
@@ -17,7 +16,7 @@ BuildRequires:	autoconf
 BuildRequires:	libtool
 BuildRequires:	lynx
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.202
 PreReq:		rc-scripts
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -127,22 +126,8 @@ cat config | \
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`/usr/bin/getgid privoxy`" ]; then
-	if [ "`/usr/bin/getgid privoxy`" != "108" ]; then
-		echo "Error: group privoxy doesn't have gid=108. Correct this before installing %{name}." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/groupadd -g 108 privoxy
-fi
-if [ -n "`/bin/id -u privoxy 2>/dev/null`" ]; then
-	if [ "`/bin/id -u privoxy`" != "108" ]; then
-		echo "Error: user privoxy doesn't have uid=108. Correct this before installing %{name}." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/useradd -u 108 -d %{privoxyconf} -s /bin/false -c "%{name} user" -g privoxy privoxy 1>&2
-fi
+%groupadd -g 108 privoxy
+%useradd -u 108 -d %{privoxyconf} -s /bin/false -c "%{name} user" -g privoxy privoxy
 
 %post
 # for upgrade from 2.0.x
