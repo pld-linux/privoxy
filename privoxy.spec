@@ -96,8 +96,8 @@ done
 
 cp -f %{name}.1 $RPM_BUILD_ROOT%{_mandir}/man1/%{name}.1
 cp -f %{name}.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
-install -m 755 %{name}.init $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install -m 711 -d $RPM_BUILD_ROOT/var/log/%{name}
+install %{name}.init $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install -d $RPM_BUILD_ROOT/var/log/%{name}
 
 # verify all file locations, etc. in the config file
 # don't start with ^ or commented lines are not replaced
@@ -180,7 +180,6 @@ fi
 
 # ATTENTION FOR defattr change here !
 %defattr(644,%{name},%{name},755)
-
 %dir %{privoxyconf}
 %dir %{privoxyconf}/templates
 %dir /var/log/%{name}
