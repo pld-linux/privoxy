@@ -1,22 +1,22 @@
 
-%define oldname junkbuster
-%define privoxyconf %{_sysconfdir}/%{name}
+%define		oldname junkbuster
+%define		privoxyconf %{_sysconfdir}/%{name}
 
 Summary:	Privoxy - privacy enhancing proxy
 Summary(pl):	Privoxy - proxy rozszerzaj±ce prywatno¶æ
 Name:		privoxy
-Version:	3.0.0
+Version:	3.0.3
 Release:	1
 License:	GPL
-Source0:	http://dl.sourceforge.net/ijbswa/%{name}-%{version}.tar.gz
-# Source0-md5:	152e21d4fb57b79da33559ba6dd1dd74
+Source0:	http://dl.sourceforge.net/ijbswa/%{name}-%{version}-2-stable.src.tar.gz
+# Source0-md5:	d7f6c2fcb926e6110659de6e866b21e4
 Group:		Networking/Daemons
 URL:		http://www.privoxy.org/
 BuildRequires:	autoconf
 BuildRequires:	libtool
 BuildRequires:	lynx
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.231
 PreReq:		rc-scripts
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -55,7 +55,8 @@ samodzielnych i serwerów sieciowych dla wielu u¿ytkowników.
 Privoxy jest oparte na Internet Junkbusterze.
 
 %prep
-%setup -q -c
+%setup -qcT
+tar xf %{SOURCE0} --strip-components=1
 
 %build
 %{__autoheader}
@@ -117,11 +118,6 @@ cat config | \
 	perl -pe 's/{-no-cookies}/{-no-cookies}\n\.redhat.com/' default.action >\
 		$RPM_BUILD_ROOT%{privoxyconf}/default.action
 
-
-## Macros are expanded even on commentaries. So, we have to use %%
-## -- morcego
-#%%makeinstall
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -140,19 +136,11 @@ rm -rf $RPM_BUILD_ROOT
 	chown -R %{name}:%{name} %{privoxyconf} 2>/dev/null ||: ;
 }
 /sbin/chkconfig --add privoxy
-if [ -f /var/lock/subsys/%{name} ]; then
-	/etc/rc.d/init.d/%{name} restart
-fi
-#if [ "$1" = "1" ]; then
-#	/sbin/service %{name} condrestart > /dev/null 2>&1 ||:
-#fi
+%service privoxy restart
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name} ]; then
-		/etc/rc.d/init.d/%{name} stop 1>&2
-	fi
-#	/sbin/service %{name} stop > /dev/null 2>&1 ||:
+	%service -q privoxy stop
 	/sbin/chkconfig --del privoxy
 fi
 
@@ -169,7 +157,7 @@ fi
 %doc doc/webserver/developer-manual
 %doc doc/webserver/user-manual
 %doc doc/webserver/faq
-%doc doc/webserver/p_doc.css doc/webserver/p_web.css doc/webserver/privoxy-index.html
+%doc doc/webserver/*.css doc/webserver/privoxy-index.html
 %doc doc/webserver/images
 %doc doc/webserver/man-page
 
