@@ -6,10 +6,12 @@ Summary:	Privoxy - privacy enhancing proxy
 Summary(pl):	Privoxy - proxy rozszerzaj±ce prywatno¶æ
 Name:		privoxy
 Version:	3.0.3
-Release:	1
+Release:	2
 License:	GPL
 Source0:	http://dl.sourceforge.net/ijbswa/%{name}-%{version}-2-stable.src.tar.gz
 # Source0-md5:	d7f6c2fcb926e6110659de6e866b21e4
+Source1:	%{name}.init
+Source2:	%{name}.logrotate
 Group:		Networking/Daemons
 URL:		http://www.privoxy.org/
 BuildRequires:	autoconf
@@ -73,8 +75,9 @@ install -d $RPM_BUILD_ROOT%{_sbindir} \
 	$RPM_BUILD_ROOT%{_mandir}/man1 \
 	$RPM_BUILD_ROOT/var/log/%{name} \
 	$RPM_BUILD_ROOT%{privoxyconf}/templates \
-	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d}
-
+	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d} \
+	$RPM_BUILD_ROOT/var/log/%{name}
+	
 install -m 744 %{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
 # Using sed to "convert" from DOS format to UNIX
@@ -97,8 +100,9 @@ done
 
 cp -f %{name}.1 $RPM_BUILD_ROOT%{_mandir}/man1/%{name}.1
 cp -f %{name}.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
-install %{name}.init $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install -d $RPM_BUILD_ROOT/var/log/%{name}
+
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 
 # verify all file locations, etc. in the config file
 # don't start with ^ or commented lines are not replaced
