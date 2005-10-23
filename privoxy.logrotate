@@ -1,0 +1,16 @@
+/var/log/privoxy/logfile {
+	missingok
+	compress
+	size 1M
+	postrotate
+		/bin/kill -HUP `/sbin/pidof privoxy 2>/dev/null` 2> /dev/null || true
+	endscript
+}
+/var/log/privoxy/jarfile {
+	missingok
+	compress
+	size 1M
+	postrotate
+		/bin/kill -HUP `/sbin/pidof privoxy 2>/dev/null` 2> /dev/null || true
+	endscript
+}
