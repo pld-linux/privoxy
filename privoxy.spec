@@ -1,12 +1,8 @@
-
-%define		oldname junkbuster
-%define		privoxyconf %{_sysconfdir}/%{name}
-
 Summary:	Privoxy - privacy enhancing proxy
 Summary(pl):	Privoxy - proxy rozszerzaj±ce prywatno¶æ
 Name:		privoxy
 Version:	3.0.3
-Release:	2
+Release:	2.1
 License:	GPL
 Source0:	http://dl.sourceforge.net/ijbswa/%{name}-%{version}-2-stable.src.tar.gz
 # Source0-md5:	d7f6c2fcb926e6110659de6e866b21e4
@@ -30,9 +26,6 @@ Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Provides:	group(privoxy)
 Provides:	user(privoxy)
-Obsoletes:	junkbuster
-Obsoletes:	junkbuster-blank
-Obsoletes:	junkbuster-raw
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -74,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sbindir} \
 	$RPM_BUILD_ROOT%{_mandir}/man1 \
 	$RPM_BUILD_ROOT/var/log/%{name} \
-	$RPM_BUILD_ROOT%{privoxyconf}/templates \
+	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/templates \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d} \
 	$RPM_BUILD_ROOT/var/log/%{name}
 	
@@ -86,15 +79,15 @@ install -m 744 %{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 # wrong format
 for i in `ls *.action`
 do
-	cat $i | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/$i
+	sed -e 's/[[:cntrl:]]*$//' $i > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/$i
 done
-cat default.filter | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/default.filter
-cat trust | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/trust
+sed -e 's/[[:cntrl:]]*$//' default.filter > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/default.filter
+sed -e 's/[[:cntrl:]]*$//' trust > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/trust
 (
 cd templates
 for i in `ls`
 do
-	cat $i | sed -e 's/[[:cntrl:]]*$//' > $RPM_BUILD_ROOT%{privoxyconf}/templates/$i
+	sed -e 's/[[:cntrl:]]*$//' $i > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/templates/$i
 done
 )
 
@@ -109,7 +102,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 ## Changing the sed paramter delimiter to @, so we don't have to
 ## escape the slashes
 cat config | \
-	sed 's@^confdir.*@confdir %{privoxyconf}@g' | \
+	sed 's@^confdir.*@confdir %{_sysconfdir}/%{name}@g' | \
 # sed 's/^permissionsfile.*/permissionsfile \/etc\/%{name}\/permissionsfile/g' | \
 # sed 's/^filterfile.*/default.filter \/etc\/%{name}\/default.filter/g' | \
 # sed 's/^logfile.*/logfile \/var\/log\/%{name}\/logfile/g' | \
@@ -118,27 +111,18 @@ cat config | \
 # sed 's/^aclfile.*/aclfile \/etc\/%{name}\/aclfile/g' > \
 	sed 's@^logdir.*@logdir %{_localstatedir}/log/%{name}@g' | \
 		sed -e 's/[[:cntrl:]]*$//' > \
-		$RPM_BUILD_ROOT%{privoxyconf}/config
+		$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/config
 	perl -pe 's/{-no-cookies}/{-no-cookies}\n\.redhat.com/' default.action >\
-		$RPM_BUILD_ROOT%{privoxyconf}/default.action
+		$RPM_BUILD_ROOT%{_sysconfdir}/%{name}/default.action
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %pre
 %groupadd -g 108 privoxy
-%useradd -u 108 -d %{privoxyconf} -s /bin/false -c "%{name} user" -g privoxy privoxy
+%useradd -u 108 -d %{_sysconfdir}/%{name} -s /bin/false -c "%{name} user" -g privoxy privoxy
 
 %post
-# for upgrade from 2.0.x
-[ -f /var/log/%{oldname}/logfile ] && {
-	mv -f /var/log/%{oldname}/logfile /var/log/%{name}/logfile ||: ;
-	chown -R %{name}:%{name} /var/log/%{name} 2>/dev/null ||: ;
-}
-[ -f /var/log/%{name}/%{name} ] && {
-	mv -f /var/log/%{name}/%{name} /var/log/%{name}/logfile ||: ;
-	chown -R %{name}:%{name} %{privoxyconf} 2>/dev/null ||: ;
-}
 /sbin/chkconfig --add privoxy
 %service privoxy restart
 
@@ -170,55 +154,11 @@ fi
 %attr(755,root,root) %{_sbindir}/%{name}
 %{_mandir}/man1/%{name}.*
 
-# ATTENTION FOR defattr change here !
-%defattr(644,%{name},%{name},755)
-%dir %{privoxyconf}
-%dir %{privoxyconf}/templates
-%dir /var/log/%{name}
+%dir %attr(751,privoxy,privoxy) /var/log/%{name}
 
-# WARNING ! WARNING ! WARNING ! WARNING ! WARNING ! WARNING ! WARNING !
-# We should not use wildchars here. This could mask missing files problems
-# -- morcego
-# WARNING ! WARNING ! WARNING ! WARNING ! WARNING ! WARNING ! WARNING !
-%config(noreplace) %verify(not size mtime md5) %{privoxyconf}/config
-%config %{privoxyconf}/standard.action
-%config(noreplace) %verify(not size mtime md5) %{privoxyconf}/user.action
-%config %{privoxyconf}/default.action
-%config %{privoxyconf}/default.filter
-%config %{privoxyconf}/trust
-
-# Please keep these alphabetized so its easier to find one that
-# is not included.
-%config %{privoxyconf}/templates/blocked
-%config %{privoxyconf}/templates/cgi-error-404
-%config %{privoxyconf}/templates/cgi-error-bad-param
-%config %{privoxyconf}/templates/cgi-error-disabled
-%config %{privoxyconf}/templates/cgi-error-file
-%config %{privoxyconf}/templates/cgi-error-file-read-only
-%config %{privoxyconf}/templates/cgi-error-modified
-%config %{privoxyconf}/templates/cgi-error-parse
-%config %{privoxyconf}/templates/cgi-style.css
-%config %{privoxyconf}/templates/connect-failed
-%config %{privoxyconf}/templates/default
-%config %{privoxyconf}/templates/edit-actions-add-url-form
-%config %{privoxyconf}/templates/edit-actions-for-url
-%config %{privoxyconf}/templates/edit-actions-for-url-filter
-%config %{privoxyconf}/templates/edit-actions-list
-%config %{privoxyconf}/templates/edit-actions-list-button
-%config %{privoxyconf}/templates/edit-actions-list-section
-%config %{privoxyconf}/templates/edit-actions-list-url
-%config %{privoxyconf}/templates/edit-actions-remove-url-form
-%config %{privoxyconf}/templates/edit-actions-url-form
-%config %{privoxyconf}/templates/mod-local-help
-%config %{privoxyconf}/templates/mod-support-and-service
-%config %{privoxyconf}/templates/mod-title
-%config %{privoxyconf}/templates/mod-unstable-warning
-%config %{privoxyconf}/templates/no-such-domain
-%config %{privoxyconf}/templates/show-request
-%config %{privoxyconf}/templates/show-status
-%config %{privoxyconf}/templates/show-status-file
-%config %{privoxyconf}/templates/show-url-info
-%config %{privoxyconf}/templates/show-version
-%config %{privoxyconf}/templates/toggle
-%config %{privoxyconf}/templates/toggle-mini
-%config %{privoxyconf}/templates/untrusted
+%dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}
+%dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}/templates
+%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/config
+%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/trust
+%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/*.*
+%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/templates/*
