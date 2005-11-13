@@ -1,0 +1,165 @@
+--- GNUmakefile.in.orig	2004-02-17 15:13:27.000000000 +0100
++++ GNUmakefile.in	2005-11-13 15:59:47.954041768 +0100
+@@ -1087,13 +1087,14 @@
+ 
+ 	@$(ECHO) "Creating directories, and preparing $(PROGRAM_V) installation"
+ 	$(CHMOD) $(DIR_MODE) $(MKDIR)
+-	@$(MKDIR) $(SBIN_DEST) $(prefix) $(CONF_DEST) $(CONF_DEST)/templates $(SHARE_DEST) \
+-		$(LOG_DEST) $(PID_DEST)
++	@$(MKDIR) $(DESTDIR)$(SBIN_DEST) $(DESTDIR)$(prefix) $(DESTDIR)$(CONF_DEST) \
++		$(DESTDIR)$(CONF_DEST)/templates $(DESTDIR)$(SHARE_DEST) \
++		$(DESTDIR)$(LOG_DEST) $(DESTDIR)$(PID_DEST)
+ 	@# Install the executable binary, strip if invoked as install-strip
+ 	@test -n "$(STRIP)" &&\
+ 	$(ECHO) Installing $(PROGRAM) stripped executable to $(SBIN_DEST) ||\
+-	$(ECHO) Installing $(PROGRAM) executable to $(SBIN_DEST)
+-	$(INSTALL) $(INSTALL_P) $(STRIP) $(PROGRAM) $(SBIN_DEST)
++	$(ECHO) Installing $(PROGRAM) executable to $(DESTDIR)$(SBIN_DEST)
++	$(INSTALL) $(INSTALL_P) $(STRIP) $(PROGRAM) $(DESTDIR)$(SBIN_DEST)
+      
+ 	@# Install the DOCS and man page. install-sh only does one file at a time.
+ 	-@if [ $(check_doc) = 0 ]; then \
+@@ -1101,29 +1102,30 @@
+ 	else \
+ 		DOC=$(prefix)/doc/privoxy ;\
+ 	fi;\
+-	$(MKDIR) $$DOC $$DOC/user-manual $$DOC/faq $$DOC/developer-manual \
+-	     $$DOC/man-page $$DOC/images $(MAN_DEST) ;\
++	$(MKDIR) $(DESTDIR)$$DOC $(DESTDIR)$$DOC/user-manual $(DESTDIR)$$DOC/faq \
++		$(DESTDIR)$$DOC/developer-manual $(DESTDIR)$$DOC/man-page \
++		$(DESTDIR)$$DOC/images $(DESTDIR)$(MAN_DEST) ;\
+ 	if [ -d "$(DOK_WEB)" ]; then \
+-		$(ECHO) Installing FAQ, Manual, and other docs to $$DOC;\
++		$(ECHO) Installing FAQ, Manual, and other docs to $(DESTDIR)$$DOC;\
+           for i in user-manual developer-manual faq; do \
+                for ii in $(DOK_WEB)/$$i/*html; do \
+-                    $(INSTALL) $(INSTALL_T) $$ii $$DOC/$$i;\
++                    $(INSTALL) $(INSTALL_T) $$ii $(DESTDIR)$$DOC/$$i;\
+                done ;\
+           done ;\
+           for i in $(DOK_WEB)/images/*jpg; do \
+-               $(INSTALL) $(INSTALL_T) $$i $$DOC/images;\
++               $(INSTALL) $(INSTALL_T) $$i $(DESTDIR)$$DOC/images;\
+           done ;\
+-		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/man-page/*html $$DOC/man-page;\
+-		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/privoxy-index.html $$DOC/index.html;\
+-		$(INSTALL) $(INSTALL_T) AUTHORS $$DOC;\
+-		$(INSTALL) $(INSTALL_T) LICENSE $$DOC;\
+-		$(INSTALL) $(INSTALL_T) README $$DOC;\
+-		$(INSTALL) $(INSTALL_T) ChangeLog $$DOC;\
+-		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/p_doc.css $$DOC;\
++		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/man-page/*html $(DESTDIR)$$DOC/man-page;\
++		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/privoxy-index.html $(DESTDIR)$$DOC/index.html;\
++		$(INSTALL) $(INSTALL_T) AUTHORS $(DESTDIR)$$DOC;\
++		$(INSTALL) $(INSTALL_T) LICENSE $(DESTDIR)$$DOC;\
++		$(INSTALL) $(INSTALL_T) README $(DESTDIR)$$DOC;\
++		$(INSTALL) $(INSTALL_T) ChangeLog $(DESTDIR)$$DOC;\
++		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/p_doc.css $(DESTDIR)$$DOC;\
+ 	fi
+ 	@# Not all platforms support gzipped man pages.
+ 	@$(ECHO) Installing man page to $(MAN_DEST)/privoxy.1
+-	-$(INSTALL) $(INSTALL_T) privoxy.1  $(MAN_DEST)/privoxy.1
++	-$(INSTALL) $(INSTALL_T) privoxy.1  $(DESTDIR)$(MAN_DEST)/privoxy.1
+ 
+ 	@# Change the config file default directories according to the configured ones
+ 	@$(ECHO) Rewriting config for this installation
+@@ -1139,9 +1141,9 @@
+ 	@# Install the config support files. Test for root install, and abort 
+ 	@# if there is no privoxy user, and no other user was enabled during 
+ 	@# configure. Later, install init script if appropriate.
+-	@$(ECHO) Installing templates to $(CONF_DEST)/templates
++	@$(ECHO) Installing templates to $(DESTDIR)$(CONF_DEST)/templates
+ 	@for i in `find templates -type f`; do \
+-		$(INSTALL) $(INSTALL_T) $$i $(CONF_DEST)/templates ;\
++		$(INSTALL) $(INSTALL_T) $$i $(DESTDIR)$(CONF_DEST)/templates ;\
+ 	done
+ 
+ 	@# FIXME: group/user validation is overly convoluted.
+@@ -1179,62 +1181,66 @@
+ 		fi ;\
+ 		INSTALL_CONF="$(INSTALL_R)" ;\
+ 	fi ;\
+-	$(ECHO) Installing configuration files to $(CONF_DEST);\
++	$(ECHO) Installing configuration files to $(DESTDIR)$(CONF_DEST);\
+ 	for i in $(CONFIGS); do \
+ 		if [ -s "$(CONF_DEST)/$$i" ] ; then \
+ 			$(ECHO) Installing $$i as $$i.new ;\
+-			$(INSTALL) $$INSTALL_CONF $$i $(CONF_DEST)/$$i.new || exit 1;\
++			$(INSTALL) $$INSTALL_CONF $$i $(DESTDIR)$(CONF_DEST)/$$i.new || exit 1;\
+ 			NEW=1;\
+ 		else \
+-			$(INSTALL) $$INSTALL_CONF $$i $(CONF_DEST) || exit 1;\
++			$(INSTALL) $$INSTALL_CONF $$i $(DESTDIR)$(CONF_DEST) || exit 1;\
+ 		fi ;\
+ 	done ;\
+ 	if [ -n "$$NEW" ]; then \
+-		$(CHMOD) $(RWD_MODE) $(CONF_DEST)/*.new || exit 1 ;\
++		$(CHMOD) $(RWD_MODE) $(DESTDIR)$(CONF_DEST)/*.new || exit 1 ;\
+ 		$(ECHO) "Warning: Older config files are preserved. Check new versions for changes!" ;\
+ 	fi ;\
+-	[ ! -f $(LOG_DEST)/logfile ] && $(ECHO) Creating logfiles in $(LOG_DEST) || \
+-		$(ECHO) Checking logfiles in $(LOG_DEST) ;\
+-		$(TOUCH) $(LOG_DEST)/logfile $(LOG_DEST)/jarfile || exit 1 ;\
++	[ ! -f $(DESTDIR)$(LOG_DEST)/logfile ] && $(ECHO) Creating logfiles in $(DESTDIR)$(LOG_DEST) || \
++		$(ECHO) Checking logfiles in $(DESTDIR)$(LOG_DEST) ;\
++		$(TOUCH) $(DESTDIR)$(LOG_DEST)/logfile $(DESTDIR)$(LOG_DEST)/jarfile || exit 1 ;\
+ 	if [ x$$USER != x ]; then \
+-		$(CHOWN) $$USER $(LOG_DEST)/logfile $(LOG_DEST)/jarfile || \
++		$(CHOWN) $$USER $(DESTDIR)$(LOG_DEST)/logfile $(DESTDIR)$(LOG_DEST)/jarfile || \
+ 		$(ECHO) "** WARNING ** current install user different from configured user. Logging may fail!!" ;\
+ 	fi ;\
+ 	if [ x$$GROUP_T != x ]; then \
+-		$(CHGRP) $$GROUP_T $(LOG_DEST)/logfile $(LOG_DEST)/jarfile || \
++		$(CHGRP) $$GROUP_T $(DESTDIR)$(LOG_DEST)/logfile $(DESTDIR)$(LOG_DEST)/jarfile || \
+ 		$(ECHO) "** WARNING ** current install user different from configured user. Logging may fail!!" ;\
+ 	fi ;\
+-	$(CHMOD) $(RWD_MODE) $(LOG_DEST)/logfile $(LOG_DEST)/jarfile || exit 1 ;\
++	$(CHMOD) $(RWD_MODE) $(DESTDIR)$(LOG_DEST)/logfile $(DESTDIR)$(LOG_DEST)/jarfile || exit 1 ;\
+ 	if [ "$(prefix)" = "/usr/local" ] || [ "$(prefix)" = "/usr" ]; then \
+-		if [ -f /etc/slackware-version ] && [ -d /etc/rc.d/ ] && [ -w /etc/rc.d/ ] ; then \
++		if [ -f /etc/slackware-version ] \
++			&& [ -d $(DESTDIR)/etc/rc.d/ ] \
++			&& [ -w $(DESTDIR)/etc/rc.d/ -o -n "$(DESTDIR)" ] ; then \
+                $(SED) 's+%PROGRAM%+$(PROGRAM)+' slackware/rc.privoxy.orig | \
+                $(SED) 's+%SBIN_DEST%+$(SBIN_DEST)+' | \
+                $(SED) 's+%CONF_DEST%+$(CONF_DEST)+' | \
+                $(SED) 's+%USER%+$$USER+' | \
+                $(SED) 's+%GROUP%+$(GROUP_T)+' >slackware/rc.privoxy ;\
+-			$(INSTALL) $(INSTALL_P) slackware/rc.privoxy /etc/rc.d/ ;\
++			$(INSTALL) $(INSTALL_P) -D slackware/rc.privoxy $(DESTDIR)/etc/rc.d/ ;\
+                $(ECHO) "Installing for Slackware." ;\
+                $(ECHO) "Dont forget to add the rc.privoxy to rc.local if you want it started at every boot" ;\
+-		elif [ -f /etc/redhat-release ] && [ -d /etc/rc.d/init.d/ ] && [ -w /etc/rc.d/init.d/ ] ; then \
+-               $(ECHO) "Installing init script to /etc/rc.d/init.d/privoxy" ;\
++		elif [ -f /etc/redhat-release ] \
++			&& [ -d $(DESTDIR)/etc/rc.d/init.d/ ] \
++			&& [ -w $(DESTDIR)/etc/rc.d/init.d/ -o -n "$(DESTDIR)" ] ; then \
++               $(ECHO) "Installing init script to $(DESTDIR)/etc/rc.d/init.d/privoxy" ;\
+ 			$(SED) 's,^PRIVOXY_BIN=.*,PRIVOXY_BIN="/usr/local/sbin/$(PROGRAM)",' privoxy.init |\
+ 			$(SED) 's,^PRIVOXY_CONF=.*,PRIVOXY_CONF="$(CONF_DEST)/config",' |\
+ 			$(SED) "s,^PRIVOXY_USER=.*,PRIVOXY_USER=$$USER," > init.tmp ;\
+-			$(INSTALL) $(INSTALL_P) init.tmp /etc/rc.d/init.d/privoxy && $(RM) init.tmp;\
+-			$(MKDIR) /etc/logrotate.d/ ;\
+-			$(ECHO) "Installing logrotate script to /etc/logrotate.d/" ;\
+-			$(INSTALL) -m 0644 privoxy.logrotate /etc/logrotate.d/privoxy ;\
+-		elif [ -d /etc/init.d ] && [ -w /etc/init.d ] ; then \
++			$(INSTALL) $(INSTALL_P) -D init.tmp $(DESTDIR)/etc/rc.d/init.d/privoxy && $(RM) init.tmp;\
++			$(MKDIR) $(DESTDIR)/etc/logrotate.d/ ;\
++			$(ECHO) "Installing logrotate script to $(DESTDIR)/etc/logrotate.d/" ;\
++			$(INSTALL) -m 0644 -D privoxy.logrotate $(DESTDIR)/etc/logrotate.d/privoxy ;\
++		elif [ -d /etc/init.d ] && [ -w $(DESTDIR)/etc/init.d -o -n "$(DESTDIR)" ] ; then \
+ 			$(ECHO) "Installing generic init script to /etc/init.d/privoxy" ;\
+ 			$(ECHO) "Please check that the PATHs are correct, and edit if needed." ;\
+-			$(INSTALL) $(INSTALL_P) privoxy-generic.init /etc/init.d/privoxy ;\
++			$(INSTALL) $(INSTALL_P) -D privoxy-generic.init $(DESTDIR)/etc/init.d/privoxy ;\
+ 		fi ;\
+ 	else \
+ 		$(ECHO) "No init script installed, install it manually if needed" ;\
+ 	fi
+ 	@# mmmmm, good.
+ 	@$(ECHO) "$(PROGRAM_V) installation succeeded!"
+-	@$(ECHO) "The Privoxy configuration files have been installed in $(CONF_DEST)"
++	@$(ECHO) "The Privoxy configuration files have been installed in $(DESTDIR)$(CONF_DEST)"
+ 
+ # rmdir is used as a precaution since it will not remove non-empty
+ # directories. RH init script creates lock file and pid file.
