@@ -5,11 +5,33 @@
 # chkconfig:	345 85 15
 # description:	Web proxy with advanced filtering capabilities
 # processname:	privoxy
-#
 # pidfile:	/var/run/privoxy.pid
+#
+# $Id$
 
 # Source function library.
 . /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Set defaults
+PRIVOXY_USER="privoxy"
+PRIVOXY_GROUP="privoxy"
+PRIVOXY_CONFIG="/etc/privoxy/config"
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/privoxy ] && . /etc/sysconfig/privoxy
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down privoxy
+		exit 1
+	fi
+else
+	exit 0
+fi
 
 RETVAL=0
 # See how we were called.
@@ -19,9 +41,9 @@ case "$1" in
 	if [ ! -f /var/lock/subsys/privoxy ]; then
 		msg_starting privoxy
 		daemon privoxy \
-		    --user privoxy.privoxy \
+		    --user $PRIVOXY_USER.$PRIVOXY_GROUP \
 		    --pidfile /var/run/privoxy.pid \
-		    /etc/privoxy/config
+		    $PRIVOXY_CONFIG
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/privoxy
 	else
@@ -41,7 +63,7 @@ case "$1" in
   reload|force-reload)
 	if [ -f /var/lock/subsys/privoxy ]; then
 		msg_reloading privoxy
-		killproc privoxy -HUP
+		killproc --pidfile /var/run/privoxy.pid privoxy -HUP
 		RETVAL=$?
 	else
 		msg_not_running privoxy >&2
@@ -63,3 +85,6 @@ case "$1" in
 esac
 
 exit $RETVAL
+
+# This must be last line !
+# vi:syntax=sh:ts=8:sw=4
