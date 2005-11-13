@@ -12,12 +12,13 @@ Patch0:		%{name}-DESTDIR.patch
 Group:		Networking/Daemons
 URL:		http://www.privoxy.org/
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	libtool
 BuildRequires:	lynx
 BuildRequires:	pcre-devel
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.231
-PreReq:		rc-scripts
+Requires:	rc-scripts
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
