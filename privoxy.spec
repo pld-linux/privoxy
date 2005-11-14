@@ -107,17 +107,17 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}
 %{_mandir}/man1/%{name}.*
-%config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/%{name}
+%config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 
 %dir %attr(751,privoxy,privoxy) /var/log/%{name}
-%ghost %attr(640,privoxy,privoxy) %verify(not size mtime md5) /var/log/%{name}/*
+%ghost %attr(640,privoxy,privoxy) %verify(not md5 mtime size) /var/log/%{name}/*
 
 %dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}
 %dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}/templates
-%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/config
-%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/trust
-%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/*.*
-%attr(751,root,privoxy) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/templates/*
+%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/config
+%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/trust
+%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.*
+%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/templates/*
 
 %doc $RPM_BUILD_ROOT%{_defaultdocdir}/%{name}/*
