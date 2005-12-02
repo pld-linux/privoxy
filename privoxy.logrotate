@@ -1,4 +1,7 @@
+# $Id$
+
 /var/log/privoxy/logfile {
+	create 644 privoxy privoxy
 	missingok
 	compress
 	size 1M
@@ -6,7 +9,9 @@
 		/bin/kill -HUP `/sbin/pidof privoxy 2>/dev/null` 2> /dev/null || true
 	endscript
 }
+
 /var/log/privoxy/jarfile {
+	create 644 privoxy privoxy
 	missingok
 	compress
 	size 1M
