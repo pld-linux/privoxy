@@ -17,16 +17,16 @@ BuildRequires:	libtool
 BuildRequires:	lynx
 BuildRequires:	pcre-devel
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.231
-Requires:	rc-scripts
-Requires(pre):	/bin/id
-Requires(pre):	/usr/bin/getgid
-Requires(pre):	/usr/sbin/groupadd
-Requires(pre):	/usr/sbin/useradd
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post):	fileutils
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires:	rc-scripts
 Provides:	group(privoxy)
 Provides:	user(privoxy)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -71,14 +71,14 @@ cp -f /usr/share/automake/config.sub .
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	CONF_BASE=/etc/privoxy \
+	CONF_BASE=%{_sysconfdir}/privoxy \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -D %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install -D %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 
 # just GPLv2
-rm -f $RPM_BUILD_ROOT/usr/share/doc/privoxy/LICENSE
+rm -f $RPM_BUILD_ROOT%{_docdir}/privoxy/LICENSE
 
 %clean
 rm -rf $RPM_BUILD_ROOT
