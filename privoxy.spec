@@ -2,7 +2,7 @@ Summary:	Privoxy - privacy enhancing proxy
 Summary(pl):	Privoxy - proxy rozszerzaj±ce prywatno¶æ
 Name:		privoxy
 Version:	3.0.3
-Release:	3
+Release:	4
 License:	GPL v2+
 Source0:	http://dl.sourceforge.net/ijbswa/%{name}-%{version}-2-stable.src.tar.gz
 # Source0-md5:	d7f6c2fcb926e6110659de6e866b21e4
@@ -115,9 +115,9 @@ fi
 
 %dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}
 %dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}/templates
-%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/config
-%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/trust
-%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.*
-%attr(751,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/templates/*
+%attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/config
+%attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/trust
+%attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.*
+%attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/templates/*
 
 %doc $RPM_BUILD_ROOT%{_defaultdocdir}/%{name}/*
