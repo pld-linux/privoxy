@@ -120,4 +120,4 @@ fi
 %attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.*
 %attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/templates/*
 
-%doc $RPM_BUILD_ROOT%{_defaultdocdir}/%{name}/*
+%doc $RPM_BUILD_ROOT%{_docdir}/%{name}/*
