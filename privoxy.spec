@@ -1,5 +1,5 @@
 Summary:	Privoxy - privacy enhancing proxy
-Summary(pl):	Privoxy - proxy rozszerzaj±ce prywatno¶æ
+Summary(pl.UTF-8):   Privoxy - proxy rozszerzajÄ…ce prywatnoÅ›Ä‡
 Name:		privoxy
 Version:	3.0.3
 Release:	6
@@ -41,14 +41,14 @@ application for both stand-alone systems and multi-user networks.
 
 Privoxy is based on the Internet Junkbuster.
 
-%description -l pl
-Privoxy to proxy WWW z rozszerzonymi mo¿liwo¶ciami filtrowania
-s³u¿±cymi do zabezpieczenia prywatno¶ci, filtrowania zawarto¶ci stron
-WWW, zarz±dzania ciasteczkami, kontroli dostêpu, usuwania bannerów,
-wyskakuj±cych okienek i innych wstrêtnych internetowych ¶mieci.
-Privoxy ma bardzo elastyczn± konfiguracjê i mo¿e byæ dopasowywane do
-indywidualnych potrzeb i gustów. Privoxy ma aplikacjê dla systemów
-samodzielnych i serwerów sieciowych dla wielu u¿ytkowników.
+%description -l pl.UTF-8
+Privoxy to proxy WWW z rozszerzonymi moÅ¼liwoÅ›ciami filtrowania
+sÅ‚uÅ¼Ä…cymi do zabezpieczenia prywatnoÅ›ci, filtrowania zawartoÅ›ci stron
+WWW, zarzÄ…dzania ciasteczkami, kontroli dostÄ™pu, usuwania bannerÃ³w,
+wyskakujÄ…cych okienek i innych wstrÄ™tnych internetowych Å›mieci.
+Privoxy ma bardzo elastycznÄ… konfiguracjÄ™ i moÅ¼e byÄ‡ dopasowywane do
+indywidualnych potrzeb i gustÃ³w. Privoxy ma aplikacjÄ™ dla systemÃ³w
+samodzielnych i serwerÃ³w sieciowych dla wielu uÅ¼ytkownikÃ³w.
 
 Privoxy jest oparte na Internet Junkbusterze.
 
