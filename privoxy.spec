@@ -1,5 +1,5 @@
 Summary:	Privoxy - privacy enhancing proxy
-Summary(pl.UTF-8):   Privoxy - proxy rozszerzające prywatność
+Summary(pl.UTF-8):	Privoxy - proxy rozszerzające prywatność
 Name:		privoxy
 Version:	3.0.3
 Release:	6
