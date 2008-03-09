@@ -1,6 +1,6 @@
---- GNUmakefile.in.orig	2004-02-17 15:13:27.000000000 +0100
-+++ GNUmakefile.in	2005-11-13 15:59:47.954041768 +0100
-@@ -1087,13 +1087,14 @@
+--- privoxy-3.0.8-stable/GNUmakefile.in.orig	2007-12-11 21:29:25.000000000 +0000
++++ privoxy-3.0.8-stable/GNUmakefile.in	2008-03-09 19:26:15.043126706 +0000
+@@ -1095,13 +1095,14 @@
  
  	@$(ECHO) "Creating directories, and preparing $(PROGRAM_V) installation"
  	$(CHMOD) $(DIR_MODE) $(MKDIR)
@@ -18,16 +18,15 @@
 +	$(INSTALL) $(INSTALL_P) $(STRIP) $(PROGRAM) $(DESTDIR)$(SBIN_DEST)
       
  	@# Install the DOCS and man page. install-sh only does one file at a time.
- 	-@if [ $(check_doc) = 0 ]; then \
-@@ -1101,29 +1102,30 @@
+ 	@# FIXME: only handles jpegs.
+@@ -1110,30 +1111,30 @@
  	else \
  		DOC=$(prefix)/doc/privoxy ;\
  	fi;\
 -	$(MKDIR) $$DOC $$DOC/user-manual $$DOC/faq $$DOC/developer-manual \
 -	     $$DOC/man-page $$DOC/images $(MAN_DEST) ;\
-+	$(MKDIR) $(DESTDIR)$$DOC $(DESTDIR)$$DOC/user-manual $(DESTDIR)$$DOC/faq \
-+		$(DESTDIR)$$DOC/developer-manual $(DESTDIR)$$DOC/man-page \
-+		$(DESTDIR)$$DOC/images $(DESTDIR)$(MAN_DEST) ;\
++	$(MKDIR) $(DESTDIR)$$DOC $(DESTDIR)$$DOC/user-manual $(DESTDIR)$$DOC/faq $(DESTDIR)$$DOC/developer-manual \
++	     $(DESTDIR)$$DOC/man-page $(DESTDIR)$$DOC/images $(DESTDIR)$(MAN_DEST) ;\
  	if [ -d "$(DOK_WEB)" ]; then \
 -		$(ECHO) Installing FAQ, Manual, and other docs to $$DOC;\
 +		$(ECHO) Installing FAQ, Manual, and other docs to $(DESTDIR)$$DOC;\
@@ -37,9 +36,9 @@
 +                    $(INSTALL) $(INSTALL_T) $$ii $(DESTDIR)$$DOC/$$i;\
                 done ;\
            done ;\
-           for i in $(DOK_WEB)/images/*jpg; do \
--               $(INSTALL) $(INSTALL_T) $$i $$DOC/images;\
-+               $(INSTALL) $(INSTALL_T) $$i $(DESTDIR)$$DOC/images;\
+ 		for i in $(DOK_WEB)/user-manual/*jpg; do \
+-               $(INSTALL) $(INSTALL_T) $$i $$DOC/user-manual;\
++               $(INSTALL) $(INSTALL_T) $$i $(DESTDIR)$$DOC/user-manual;\
            done ;\
 -		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/man-page/*html $$DOC/man-page;\
 -		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/privoxy-index.html $$DOC/index.html;\
@@ -48,6 +47,7 @@
 -		$(INSTALL) $(INSTALL_T) README $$DOC;\
 -		$(INSTALL) $(INSTALL_T) ChangeLog $$DOC;\
 -		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/p_doc.css $$DOC;\
+-		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/p_doc.css $$DOC/user-manual;\
 +		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/man-page/*html $(DESTDIR)$$DOC/man-page;\
 +		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/privoxy-index.html $(DESTDIR)$$DOC/index.html;\
 +		$(INSTALL) $(INSTALL_T) AUTHORS $(DESTDIR)$$DOC;\
@@ -55,15 +55,17 @@
 +		$(INSTALL) $(INSTALL_T) README $(DESTDIR)$$DOC;\
 +		$(INSTALL) $(INSTALL_T) ChangeLog $(DESTDIR)$$DOC;\
 +		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/p_doc.css $(DESTDIR)$$DOC;\
++		$(INSTALL) $(INSTALL_T) $(DOK_WEB)/p_doc.css $(DESTDIR)$$DOC/user-manual;\
  	fi
  	@# Not all platforms support gzipped man pages.
- 	@$(ECHO) Installing man page to $(MAN_DEST)/privoxy.1
+-	@$(ECHO) Installing man page to $(MAN_DEST)/privoxy.1
 -	-$(INSTALL) $(INSTALL_T) privoxy.1  $(MAN_DEST)/privoxy.1
++	@$(ECHO) Installing man page to $(DESTDIR)$(MAN_DEST)/privoxy.1
 +	-$(INSTALL) $(INSTALL_T) privoxy.1  $(DESTDIR)$(MAN_DEST)/privoxy.1
  
  	@# Change the config file default directories according to the configured ones
  	@$(ECHO) Rewriting config for this installation
-@@ -1139,9 +1141,9 @@
+@@ -1154,9 +1155,9 @@
  	@# Install the config support files. Test for root install, and abort 
  	@# if there is no privoxy user, and no other user was enabled during 
  	@# configure. Later, install init script if appropriate.
@@ -75,16 +77,24 @@
  	done
  
  	@# FIXME: group/user validation is overly convoluted.
-@@ -1179,62 +1181,66 @@
+@@ -1194,36 +1195,36 @@
  		fi ;\
  		INSTALL_CONF="$(INSTALL_R)" ;\
  	fi ;\
 -	$(ECHO) Installing configuration files to $(CONF_DEST);\
 +	$(ECHO) Installing configuration files to $(DESTDIR)$(CONF_DEST);\
  	for i in $(CONFIGS); do \
- 		if [ -s "$(CONF_DEST)/$$i" ] ; then \
- 			$(ECHO) Installing $$i as $$i.new ;\
+ 		if [ "$$i" = "default.action" ] || [ "$$i" = "default.filter" ] || [ "$$i" = "standard.action" ]; then \
+-			$(RM) $(CONF_DEST)/$$i ;\
+-			$(ECHO) Installing fresh $$i;\
+-			$(INSTALL) $$INSTALL_CONF $$i $(CONF_DEST) || exit 1;\
++			$(RM) $(DESTDIR)$(CONF_DEST)/$$i ;\
++			$(ECHO) Installing fresh $(DESTDIR)$$i;\
++			$(INSTALL) $$INSTALL_CONF $$i $(DESTDIR)$(CONF_DEST) || exit 1;\
+ 		elif [ -s "$(CONF_DEST)/$$i" ]; then \
+-			$(ECHO) Installing $$i as $$i.new ;\
 -			$(INSTALL) $$INSTALL_CONF $$i $(CONF_DEST)/$$i.new || exit 1;\
++			$(ECHO) Installing $$i as $(DESTDIR)$$i.new ;\
 +			$(INSTALL) $$INSTALL_CONF $$i $(DESTDIR)$(CONF_DEST)/$$i.new || exit 1;\
  			NEW=1;\
  		else \
@@ -116,25 +126,18 @@
 -	$(CHMOD) $(RWD_MODE) $(LOG_DEST)/logfile $(LOG_DEST)/jarfile || exit 1 ;\
 +	$(CHMOD) $(RWD_MODE) $(DESTDIR)$(LOG_DEST)/logfile $(DESTDIR)$(LOG_DEST)/jarfile || exit 1 ;\
  	if [ "$(prefix)" = "/usr/local" ] || [ "$(prefix)" = "/usr" ]; then \
--		if [ -f /etc/slackware-version ] && [ -d /etc/rc.d/ ] && [ -w /etc/rc.d/ ] ; then \
-+		if [ -f /etc/slackware-version ] \
-+			&& [ -d $(DESTDIR)/etc/rc.d/ ] \
-+			&& [ -w $(DESTDIR)/etc/rc.d/ -o -n "$(DESTDIR)" ] ; then \
+ 		if [ -f /etc/slackware-version ] && [ -d /etc/rc.d/ ] && [ -w /etc/rc.d/ ] ; then \
                 $(SED) 's+%PROGRAM%+$(PROGRAM)+' slackware/rc.privoxy.orig | \
-                $(SED) 's+%SBIN_DEST%+$(SBIN_DEST)+' | \
+@@ -1231,7 +1232,7 @@
                 $(SED) 's+%CONF_DEST%+$(CONF_DEST)+' | \
-                $(SED) 's+%USER%+$$USER+' | \
+                $(SED) 's+%USER%+$(USER)+' | \
                 $(SED) 's+%GROUP%+$(GROUP_T)+' >slackware/rc.privoxy ;\
 -			$(INSTALL) $(INSTALL_P) slackware/rc.privoxy /etc/rc.d/ ;\
-+			$(INSTALL) $(INSTALL_P) -D slackware/rc.privoxy $(DESTDIR)/etc/rc.d/ ;\
++			$(INSTALL) $(INSTALL_P) slackware/rc.privoxy $(DESTDIR)/etc/rc.d/ ;\
                 $(ECHO) "Installing for Slackware." ;\
                 $(ECHO) "Dont forget to add the rc.privoxy to rc.local if you want it started at every boot" ;\
--		elif [ -f /etc/redhat-release ] && [ -d /etc/rc.d/init.d/ ] && [ -w /etc/rc.d/init.d/ ] ; then \
--               $(ECHO) "Installing init script to /etc/rc.d/init.d/privoxy" ;\
-+		elif [ -f /etc/redhat-release ] \
-+			&& [ -d $(DESTDIR)/etc/rc.d/init.d/ ] \
-+			&& [ -w $(DESTDIR)/etc/rc.d/init.d/ -o -n "$(DESTDIR)" ] ; then \
-+               $(ECHO) "Installing init script to $(DESTDIR)/etc/rc.d/init.d/privoxy" ;\
+ 		elif [ -f /etc/redhat-release ] && [ -d /etc/rc.d/init.d/ ] && [ -w /etc/rc.d/init.d/ ] ; then \
+@@ -1239,14 +1240,14 @@
  			$(SED) 's,^PRIVOXY_BIN=.*,PRIVOXY_BIN="/usr/local/sbin/$(PROGRAM)",' privoxy.init |\
  			$(SED) 's,^PRIVOXY_CONF=.*,PRIVOXY_CONF="$(CONF_DEST)/config",' |\
  			$(SED) "s,^PRIVOXY_USER=.*,PRIVOXY_USER=$$USER," > init.tmp ;\
@@ -143,19 +146,21 @@
 -			$(ECHO) "Installing logrotate script to /etc/logrotate.d/" ;\
 -			$(INSTALL) -m 0644 privoxy.logrotate /etc/logrotate.d/privoxy ;\
 -		elif [ -d /etc/init.d ] && [ -w /etc/init.d ] ; then \
-+			$(INSTALL) $(INSTALL_P) -D init.tmp $(DESTDIR)/etc/rc.d/init.d/privoxy && $(RM) init.tmp;\
+-			$(ECHO) "Installing generic init script to /etc/init.d/privoxy" ;\
++			$(INSTALL) $(INSTALL_P) init.tmp $(DESTDIR)/etc/rc.d/init.d/privoxy && $(RM) init.tmp;\
 +			$(MKDIR) $(DESTDIR)/etc/logrotate.d/ ;\
 +			$(ECHO) "Installing logrotate script to $(DESTDIR)/etc/logrotate.d/" ;\
-+			$(INSTALL) -m 0644 -D privoxy.logrotate $(DESTDIR)/etc/logrotate.d/privoxy ;\
-+		elif [ -d /etc/init.d ] && [ -w $(DESTDIR)/etc/init.d -o -n "$(DESTDIR)" ] ; then \
- 			$(ECHO) "Installing generic init script to /etc/init.d/privoxy" ;\
++			$(INSTALL) -m 0644 privoxy.logrotate $(DESTDIR)/etc/logrotate.d/privoxy ;\
++		elif [ -d $(DESTDIR)/etc/init.d ] && [ -w $(DESTDIR)/etc/init.d ] ; then \
++			$(ECHO) "Installing generic init script to $(DESTDIR)/etc/init.d/privoxy" ;\
  			$(ECHO) "Please check that the PATHs are correct, and edit if needed." ;\
 -			$(INSTALL) $(INSTALL_P) privoxy-generic.init /etc/init.d/privoxy ;\
-+			$(INSTALL) $(INSTALL_P) -D privoxy-generic.init $(DESTDIR)/etc/init.d/privoxy ;\
++			$(INSTALL) $(INSTALL_P) privoxy-generic.init $(DESTDIR)/etc/init.d/privoxy ;\
  		fi ;\
  	else \
  		$(ECHO) "No init script installed, install it manually if needed" ;\
- 	fi
+@@ -1254,7 +1255,7 @@
+ 	$(RM) config.base config.tmp
  	@# mmmmm, good.
  	@$(ECHO) "$(PROGRAM_V) installation succeeded!"
 -	@$(ECHO) "The Privoxy configuration files have been installed in $(CONF_DEST)"
