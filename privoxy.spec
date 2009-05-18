@@ -1,11 +1,11 @@
 Summary:	Privoxy - privacy enhancing proxy
 Summary(pl.UTF-8):	Privoxy - proxy rozszerzające prywatność
 Name:		privoxy
-Version:	3.0.10
-Release:	0.2
+Version:	3.0.12
+Release:	1
 License:	GPL v2+
 Source0:	http://dl.sourceforge.net/ijbswa/%{name}-%{version}-stable-src.tar.gz
-# Source0-md5:	01281017f28be2c7133124d1768da364
+# Source0-md5:	c973e608d27b248ef567b47664308da1
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Patch0:		%{name}-DESTDIR.patch
@@ -18,6 +18,7 @@ BuildRequires:	lynx
 BuildRequires:	pcre-devel
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	zlib-devel
 Requires(post):	fileutils
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
@@ -63,8 +64,7 @@ Privoxy jest oparte na Internet Junkbusterze.
 cp -f /usr/share/automake/config.sub .
 %configure
 
-%{__make} \
-	OTHER_CFLAGS="%{rpmcflags}"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -105,18 +105,15 @@ fi
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}
-%{_mandir}/man1/%{name}.*
-%config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
-%attr(754,root,root) /etc/rc.d/init.d/%{name}
-
-%dir %attr(751,privoxy,privoxy) /var/log/%{name}
-%ghost %attr(640,privoxy,privoxy) %verify(not md5 mtime size) /var/log/%{name}/*
-
 %dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}
 %dir %attr(751,root,privoxy) %{_sysconfdir}/%{name}/templates
 %attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/config
 %attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/trust
 %attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.*
 %attr(640,root,privoxy) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/templates/*
-
-%doc $RPM_BUILD_ROOT%{_docdir}/%{name}/*
+%config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
+%{_mandir}/man1/%{name}.*
+%dir %attr(751,privoxy,privoxy) /var/log/%{name}
+%ghost %attr(640,privoxy,privoxy) %verify(not md5 mtime size) /var/log/%{name}/*
+%{_docdir}/%{name}
