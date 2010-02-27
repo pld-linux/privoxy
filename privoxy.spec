@@ -115,5 +115,5 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man1/%{name}.*
 %dir %attr(751,privoxy,privoxy) /var/log/%{name}
-%ghost %attr(640,privoxy,privoxy) %verify(not md5 mtime size) /var/log/%{name}/*
+%attr(640,privoxy,privoxy) %ghost %verify(not md5 mtime size) /var/log/%{name}/*
 %{_docdir}/%{name}
