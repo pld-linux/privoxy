@@ -1,11 +1,11 @@
 Summary:	Privoxy - privacy enhancing proxy
 Summary(pl.UTF-8):	Privoxy - proxy rozszerzające prywatność
 Name:		privoxy
-Version:	3.0.12
+Version:	3.0.16
 Release:	1
 License:	GPL v2+
 Source0:	http://dl.sourceforge.net/ijbswa/%{name}-%{version}-stable-src.tar.gz
-# Source0-md5:	c973e608d27b248ef567b47664308da1
+# Source0-md5:	64d3ffcdf8307e04a375773bb4eb255e
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Patch0:		%{name}-DESTDIR.patch
