@@ -1,6 +1,7 @@
 # $Id$
 
 /var/log/privoxy/logfile {
+	su privoxy privoxy
 	create 644 privoxy privoxy
 	missingok
 	compress
@@ -11,6 +12,7 @@
 }
 
 /var/log/privoxy/jarfile {
+	su privoxy privoxy
 	create 644 privoxy privoxy
 	missingok
 	compress
