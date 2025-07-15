@@ -55,7 +55,7 @@ Privoxy jest oparte na Internet Junkbusterze.
 
 %prep
 %setup -q -n %{name}-%{version}-stable
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 %{__aclocal}
